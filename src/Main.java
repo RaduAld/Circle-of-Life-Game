@@ -83,12 +83,12 @@ public class Main {
         // Accesseurs via notation humaine
         // ------------------------------------------
         System.out.println("\n--- Lecture via notation humaine (pas implémenté / utile pour le moment ) ---");
-        Cell cellE5 = BoardUtils.fromNotation("E5");
-        System.out.println("Cellule E5           = " + cellE5);
+        Cell cellE4 = BoardUtils.fromNotation("E4");
+        System.out.println("Cellule E4           = " + cellE4);
         // - spiralIndexOf et neighboursOf sont maintenant sur Board, pas sur Cell
-        System.out.println("Indice spiral de E5  = " + board.spiralIndexOf(cellE5));
-        System.out.println("Anneau de E5         = " + cellE5.ring());
-        System.out.println("Occupant de E5       = " + board.getOwner(cellE5));
+        System.out.println("Indice spiral de E4  = " + board.spiralIndexOf(cellE4));
+        System.out.println("Anneau de E4         = " + cellE4.ring());
+        System.out.println("Occupant de E4       = " + board.getOwner(cellE4));
 
         // - Voisins du centre via Board.neighboursOf()
         System.out.println("\nVoisins du centre (x=0, y=0, z=0) :");

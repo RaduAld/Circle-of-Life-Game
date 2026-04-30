@@ -56,14 +56,14 @@ public class Cell {
         return distanceTo(other) == 1;
     }
 
-    /// à voir plus tard si utile (j'ai pensé qu'on pourra ajouter les notations A1...G5... sur le plateau)
-    // Retourne la notation humaine de cette cellule - ex: "E5" pour le centre (x=0, y=0, z=0)
-    // Colonne : x=-4 -> A, x=0 -> E, x=4 -> I
-    // Ligne   : y=-4 -> 1, y=0 -> 5, y=4 -> 9
+    // Retourne la notation humaine de cette cellule
+    // Lettre = ligne de haut en bas : y=-4 -> A, y=0 -> E, y=4 -> I
+    // Chiffre = position dans la ligne de gauche à droite, démarrant à 0
+    // Exemple : centre (x=0, y=0, z=0) -> E4
     public String toNotation() {
-        char col = (char) ('A' + (x + 4));
-        int  row = y + 5;
-        return "" + col + row;
+        char row = (char) ('A' + (y + 4));
+        int  col = x - Math.max(-4, -y - 4);
+        return "" + row + col;
     }
 
     // ------------------------------------------

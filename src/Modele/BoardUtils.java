@@ -106,13 +106,15 @@ public class BoardUtils {
     // Notation humaine
     // ------------------------------------------
 
-    // Convertit une notation humaine (ex: "E5") en Cell
-    // Colonne lettre : A = x=-4, E = x=0 - Ligne chiffre : 1 = y=-4, 5 = y=0
+    // Convertit une notation humaine (ex: "E4") en Cell
+    // Lettre : A = y=-4, E = y=0, I = y=4
+    // Chiffre : position 0-basée dans la ligne, de gauche à droite
     public static Cell fromNotation(String notation) {
         if (notation == null || notation.length() < 2) return null;
-        int x = Character.toUpperCase(notation.charAt(0)) - 'A' - 4;
-        int y = Integer.parseInt(notation.substring(1)) - 5;
-        int z = -x - y;
+        int y   = Character.toUpperCase(notation.charAt(0)) - 'A' - 4;
+        int col = Integer.parseInt(notation.substring(1));
+        int x   = col + Math.max(-4, -y - 4);
+        int z   = -x - y;
         return new Cell(x, y, z);
     }
 }
