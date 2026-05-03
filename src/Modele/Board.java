@@ -1,12 +1,14 @@
 package Modele;
 
+import Patterns.Observable;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Board {
+public class Board extends Observable {
 
     // ------------------------------------------
     // État du plateau - les deux masques sont tout ce qu'on stocke par instance
@@ -186,6 +188,7 @@ public class Board {
     public Board applyMove(Cell c, int player) {
         Integer idx = cellToSpiral.get(c);
         if (idx == null) return this;
+        notifierObservateur();
         return applyMoveBit(idx, player);
     }
 

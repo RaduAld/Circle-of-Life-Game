@@ -1,4 +1,6 @@
+import Control.ControleurMediateur;
 import Modele.*;
+import Vue.*;
 
 public class Main {
 
@@ -6,6 +8,9 @@ public class Main {
 
         // Initialise le plateau - les tables statiques sont construites ici une seule fois
         Board board = new Board();
+        ControleurMediateur  control =  new ControleurMediateur(board);
+        InterfaceGraphique.demarrer(board, control);
+
 
         System.out.println("=== Circle of Life - Exemple de partie ===\n");
 
