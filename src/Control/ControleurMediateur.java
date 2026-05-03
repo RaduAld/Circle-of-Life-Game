@@ -18,6 +18,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 //    AnimationJeuAutomatique animationIA;
 //    IA[] joueursAutomatiques; // on va faire jouer des IA l'une contre l'autre, ça remplace joueurAutomatique
     int[] typeJoueur; // humain == 0, IA == 1
+    int joueurCourant = 0;
 //
    public ControleurMediateur(Board board) {
         this.board = board;
@@ -111,9 +112,19 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void clicSouris(Cell c){
     //marche pas j pas compris le prblm ???? je parle de la condition
     //if(board.checkWinner(20) != -1 && c!=null){
-            board = board.applyMove(c, 0);
-            vue.miseAJour();
-            System.out.println(board.hashCode());
+        if (c != null && board.isEmpty(c) && board.checkWinner(20) == -1) {
+            Board nextBoard = board.applyMove(c, joueurCourant);
+            if (nextBoard != board) {
+                board = nextBoard;
+                joueurCourant = 1 - joueurCourant;
+                vue.miseAJour();
+                System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);
+                int winner = board.checkWinner(20);
+                if (winner != -1) {
+                    System.out.println("Partie finie ! Le vainqueur est : Joueur " + winner);
+                }
+            }
+        }
         //}
        // return;
 //        if(!jeu.jeuTermine() && typeJoueur[jeu.getJoueur()] == 0){
