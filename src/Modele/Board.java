@@ -142,6 +142,17 @@ public class Board extends Observable {
     // Accesseurs de l'état d'une cellule
     // ------------------------------------------
 
+    public int getCaptured(int player){
+        switch (player) {
+            case 0:
+                return capturedByP0;
+            case 1:
+                return capturedByP1;
+            default:
+                return -1;
+        }
+    }
+
     // Retourne true si aucun joueur n'occupe cette cellule
     public boolean isEmpty(Cell c) {
         Integer idx = cellToSpiral.get(c);
