@@ -15,4 +15,5 @@ public class Observable {
         for(Observateur o : ob)
             o.miseAJour();
     }
+
 }

@@ -142,6 +142,17 @@ public class Board extends Observable {
     // Accesseurs de l'état d'une cellule
     // ------------------------------------------
 
+    public int getCaptured(int player){
+        switch (player) {
+            case 0:
+                return capturedByP0;
+            case 1:
+                return capturedByP1;
+            default:
+                return -1;
+        }
+    }
+
     // Retourne true si aucun joueur n'occupe cette cellule
     public boolean isEmpty(Cell c) {
         Integer idx = cellToSpiral.get(c);
@@ -355,8 +366,17 @@ public class Board extends Observable {
     }
 
     // Retourne true si p0 et p1 sont identiques entre les deux plateaux - même état de jeu
+    /*
     public boolean equals(Board other) {
         return this.p0.equals(other.p0) && this.p1.equals(other.p1);
+    }
+    */
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Board)) return false;
+        Board o = (Board) other;
+        return this.p0.equals(o.p0) && this.p1.equals(o.p1);
     }
 
     // ------------------------------------------
