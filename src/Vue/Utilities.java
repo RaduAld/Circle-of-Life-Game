@@ -51,7 +51,7 @@ public class Utilities {
         label.setFont(new Font("Monserrat",Font.BOLD,18));
         label.setForeground(color);
         label.setOpaque(true);
-        label.setBackground(new Color(253, 222, 173, 148));
+        label.setBackground(new Color(0, 0, 0, 0)); 
         label.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(207, 185, 106, 220), 2, true),
                 new EmptyBorder(20, 30, 20, 30)

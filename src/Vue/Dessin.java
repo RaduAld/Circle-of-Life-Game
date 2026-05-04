@@ -14,12 +14,15 @@ public class Dessin extends JComponent {
    // taille du centre jusqua un sommet
    public static final double taille_case = 30.0;
     CollecteurEvenements control;
+    PlayerPanel p1, p2;
 
-    public Dessin( Board b, CollecteurEvenements c){
+    public Dessin( Board b, PlayerPanel p1, PlayerPanel p2, CollecteurEvenements c){
         board = b;
         control = c;
+        this.p1 = p1;
+        this.p2 = p2;
 
-        addMouseListener(new AdaptateurSouris(this, control));
+        addMouseListener(new AdaptateurSouris(this, control,p1, p2));
     }
 
     //creer un hexgone : 6 sommets espacés de 60 degré,

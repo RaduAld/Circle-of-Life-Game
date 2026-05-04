@@ -3,10 +3,11 @@ package Control;
 //
 //import Global.Configuration;
 import Modele.*;
+import Patterns.Observable;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
-public class ControleurMediateur implements CollecteurEvenements {
+public class ControleurMediateur extends Observable implements CollecteurEvenements {
     Board board;
     InterfaceUtilisateur vue;
 //    int lenteurPas;
@@ -117,7 +118,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             if (nextBoard != board) {
                 board = nextBoard;
                 joueurCourant = 1 - joueurCourant;
-                vue.miseAJour();
+                notifierObservateurs();
                 System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);
                 int winner = board.checkWinner(20);
                 if (winner != -1) {

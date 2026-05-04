@@ -11,7 +11,7 @@ public class Observable {
         ob.add(o);
     }
 
-    public void notifierObservateur(){
+public void notifierObservateurs(){
         for(Observateur o : ob)
             o.miseAJour();
     }

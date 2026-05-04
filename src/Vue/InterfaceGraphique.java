@@ -6,14 +6,17 @@ import Patterns.Observateur;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.PlainDocument;
 
 import Control.ControleurMediateur;
 
 public class InterfaceGraphique extends JComponent implements Runnable, InterfaceUtilisateur, Observateur{
     Board board;
     Dessin dessin;
-
     CollecteurEvenements control;
+    PlayerPanel p1, p2;
+    Action actionContainer;
+
     JFrame frame;
     JPanel root, gameContainer;
 
@@ -25,21 +28,23 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     public static void demarrer(Board b, CollecteurEvenements c){
         InterfaceGraphique vue = new InterfaceGraphique(b, c);
         c.ajouteInterfaceUtilisateur(vue);
+        ((ControleurMediateur) c).ajouterObservateur(vue);
         SwingUtilities.invokeLater(vue);
     }
 
     @Override
     public void run(){
         frame = new JFrame("CIRCLE OF LIFE ");
-        frame.setSize(900, 500);
-        dessin = new Dessin(board, control);
+        frame.setSize(900, 600);
+        dessin = new Dessin(board, p1, p2, control);
+      
         gameContainer = new JPanel(new BorderLayout());
         gameContainer.setOpaque(false);
         gameContainer.add(dessin, BorderLayout.CENTER);
 
-        PlayerPanel p1 = new PlayerPanel(board,control,1);
-        PlayerPanel p2 = new PlayerPanel(board,control,2);
-        Action actionContainer = new Action(board);
+         p1 = new PlayerPanel(board,control,1);
+         p2 = new PlayerPanel(board,control,2);
+         actionContainer = new Action(board);
 
         root = new PanelRoot();
 
@@ -47,10 +52,6 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
         root.add(gameContainer, BorderLayout.CENTER);
         root.add(p2,BorderLayout.WEST);
         root.add(actionContainer, BorderLayout.SOUTH);
-
-      
-
-        board.ajouterObservateur(this);
 
     //    Timer timer = new Timer(30, e -> control.tictac());
     //    timer.start();
@@ -65,7 +66,8 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     @Override
     public void miseAJour() {
         dessin.repaint();
-
+        p1.update();
+        p2.update();
 
 //        if (Board.BoardTermine()) {
 //            defaite(joueurEnCours);
