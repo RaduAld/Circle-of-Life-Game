@@ -26,7 +26,7 @@ public class Game {
 
     void play(Cell c){
         historique.play(c, currentPlayer, board);
-        board.applyMove(c, currentPlayer);
+        board = board.applyMove(c, currentPlayer);
         changePlayer();
     }
 
@@ -51,8 +51,7 @@ public class Game {
             return 1;
         }
         Coup c = historique.redo();
-        board = c.boardAvant;
-        board.applyMove(c.cellule, c.joueur);
+        board = c.boardAvant.applyMove(c.cellule, c.joueur);
         currentPlayer = c.nextPlayer();
         return 0;
     }
