@@ -38,7 +38,7 @@ public class TestHistorique {
     }
 
     @Test
-    public void testaRefaire(){
+    public void testRefaire(){
         Historic historique = new Historic();
         Board board = new Board();
 

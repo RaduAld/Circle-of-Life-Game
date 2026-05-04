@@ -24,6 +24,18 @@ public class Game {
         currentPlayer = historique.lastCoup().nextPlayer();
     }
 
+    void initialiseGame(int player){
+        board = new Board();
+        historique.clearHistoric();
+        currentPlayer = player;
+    }
+
+    void initialiseGameFromFile(String path){
+        board = new Board();
+        historique = new Historic(path);
+        currentPlayer = historique.lastCoup().nextPlayer();
+    }
+
     void play(Cell c){
         historique.play(c, currentPlayer, board);
         board = board.applyMove(c, currentPlayer);

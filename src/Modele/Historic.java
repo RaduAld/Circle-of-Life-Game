@@ -37,6 +37,11 @@ public class Historic {
         }
     }
 
+    public void clearHistoric(){
+        after.clear();
+        before.clear();
+    }
+
     public void play(Cell cellule, int joueur, Board boardActuel) {
         before.push(new Coup(cellule, joueur, boardActuel));
         after.clear();
