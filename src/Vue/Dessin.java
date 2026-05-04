@@ -1,6 +1,7 @@
 package Vue;
 
 import Modele.Board;
+import Modele.Game;
 import Modele.Cell;
 
 import javax.swing.*;
@@ -9,15 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dessin extends JComponent {
-
-    Board board;
+    Game jeu;
    // taille du centre jusqua un sommet
    public static final double taille_case = 30.0;
     CollecteurEvenements control;
     PlayerPanel p1, p2;
 
-    public Dessin( Board b, PlayerPanel p1, PlayerPanel p2, CollecteurEvenements c){
-        board = b;
+    public Dessin( Game j, PlayerPanel p1, PlayerPanel p2, CollecteurEvenements c){
+        jeu = j;
         control = c;
         this.p1 = p1;
         this.p2 = p2;
@@ -49,13 +49,13 @@ public class Dessin extends JComponent {
         //pour passer d’un centre d’hexagone à l’autre horizontalement il faut multiplier par racine de 3 
         //la largeur de gauche vers droite vaut 2*cos(30) = v3
         //c.z / 2 pour prendre en compte le décalage horizontal entre les lignes dhexag sinon on aura une sorte de carre dhexag
-        int x = cx + (int)((c.x + c.z / 2.0) * taille_case * Math.sqrt(3));
+        int x = cx + (int)((c.x + c.y / 2.0) * taille_case * Math.sqrt(3));
         
         //la coord verticale 
         //les hexagones se chauvauchesnt donc entre deux centres verticalement
         //on a pas taille_case*2 mais taille_case*1.5 pour prendre en compte le chevauchement
         //y = cy + c.z * (3/2) * taille_case
-        int y = cy + (int)(c.z * (taille_case + taille_case/2));
+        int y = cy + (int)(c.y * (taille_case + taille_case/2));
 
         return new double[]{x,y};
     }
@@ -75,14 +75,14 @@ public class Dessin extends JComponent {
         //quand on  fait celle vers pixel :  y = cy + c.z * (3/2) * taille_case    ->  y = cy + dy on cherche cz  
         //dy = c.z * (3/2) * taille_case
        // du coup c.z = dy/ (3/2*t)  voili voilou
-        double z = (2.0/3.0 * dy) / taille_case;
+        double y = (2.0/3.0 * dy) / taille_case;
      
         //x=cx+dx mm que y    dx = (c.x + c.z / 2.0) * taille_case * sqrt(3);
        // dx / (sqrt(3)*taille_case) = c.x + c.z/2
        //
-        double x = dx/(Math.sqrt(3)*taille_case) - z/2;
+        double x = dx/(Math.sqrt(3)*taille_case) - y/2;
     
-        double y = -x - z;
+        double z = -x - y;
  
         // arrondi cube (conserve x+y+z=0) pour garder ue des valuers entieres
         int rx = (int)Math.round(x), ry = (int)Math.round(y), rz = (int)Math.round(z);
@@ -95,20 +95,17 @@ public class Dessin extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        //applymove cree a chaque fois un nouveau board donc vue faut quelle pointe sur le nouvel board quelle va recuperer de controlleur 
-        Board b = control.getBoard(); 
-
-        for (int i=0; i<board.CELL_COUNT; i++){
-            Cell cell = board.spiralCells[i];
-            drawHex(g2, cell, b);
+        Board board = jeu.returnBoard();
+        for (int i=0; i<board.cellCount(); i++){
+            Cell cell = board.getCell(i);
+            drawHex(g2, cell, board);
         }
     }
 
-    public  void drawHex(Graphics2D g, Cell c, Board board){
+    public  void drawHex(Graphics2D g, Cell c,Board board){
 
         double[] d = centrePixel(c);
         Polygon hex = trouverSommetsHex(d[0], d[1]);
-
         int owner = board.getOwner(c);
         if (owner == 0) {
             g.setColor(new Color(193, 109, 83));

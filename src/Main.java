@@ -7,9 +7,9 @@ public class Main {
     public static void main(String[] args) {
 
         // Initialise le plateau - les tables statiques sont construites ici une seule fois
-        Board board = new Board();
-        ControleurMediateur  control =  new ControleurMediateur(board);
-        InterfaceGraphique.demarrer(board, control);
+        Game jeu = new Game(0);
+        ControleurMediateur  control =  new ControleurMediateur(jeu);
+        InterfaceGraphique.demarrer(jeu, control);
 
 
         System.out.println("=== Circle of Life - Exemple de partie ===\n");

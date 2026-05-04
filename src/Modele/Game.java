@@ -4,9 +4,9 @@ public class Game {
     Board board;
     Historic historique;
     int currentPlayer;
-
+    private final int captureTreshold = 20;
     //On choisit le joueur qui démarre
-    Game(int joueur){
+    public Game(int joueur){
         board = new Board();
         historique = new Historic();
         if (joueur > 1 || joueur<0){
@@ -24,7 +24,7 @@ public class Game {
         currentPlayer = historique.lastCoup().nextPlayer();
     }
 
-    void initialiseGame(int player){
+    public void initialiseGame(int player){
         board = new Board();
         historique.clearHistoric();
         currentPlayer = player;
@@ -36,7 +36,7 @@ public class Game {
         currentPlayer = historique.lastCoup().nextPlayer();
     }
 
-    void play(Cell c){
+    public void play(Cell c){
         historique.play(c, currentPlayer, board);
         board = board.applyMove(c, currentPlayer);
         changePlayer();
@@ -53,7 +53,7 @@ public class Game {
         return 0;
     }
 
-    void changePlayer(){
+    public void changePlayer(){
         currentPlayer =( currentPlayer+1 ) % 2;
     }
 
@@ -70,5 +70,14 @@ public class Game {
 
     int saveGame(String path){
         return historique.saveToFile(path);
+    }
+    public boolean gameOver(){
+        return !board.hasLegalMoves() || hasWin()!=-1;
+    }
+    public int hasWin(){
+        return board.checkWinner(captureTreshold);
+    }
+    public Board returnBoard(){
+        return board;
     }
 }

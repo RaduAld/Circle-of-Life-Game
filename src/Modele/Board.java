@@ -139,7 +139,12 @@ public class Board  {
     // ------------------------------------------
     // Accesseurs de l'état d'une cellule
     // ------------------------------------------
-
+    public int cellCount(){
+        return CELL_COUNT;
+    }
+    public Cell getCell(int i){
+        return spiralCells[i];
+    }
     public int getCaptured(int player){
         switch (player) {
             case 0:

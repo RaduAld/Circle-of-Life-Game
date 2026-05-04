@@ -1,6 +1,7 @@
 package Vue;
 
 import Modele.Board;
+import Modele.Game;
 import Patterns.Observateur;
 
 import java.awt.*;
@@ -11,7 +12,7 @@ import javax.swing.text.PlainDocument;
 import Control.ControleurMediateur;
 
 public class InterfaceGraphique extends JComponent implements Runnable, InterfaceUtilisateur, Observateur{
-    Board board;
+    Game jeu;
     Dessin dessin;
     CollecteurEvenements control;
     PlayerPanel p1, p2;
@@ -20,13 +21,13 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     JFrame frame;
     JPanel root, gameContainer;
 
-    public InterfaceGraphique(Board b, CollecteurEvenements c){
-        board = b;
+    public InterfaceGraphique(Game j, CollecteurEvenements c){
+        jeu = j;
         control = c;
     }
 
-    public static void demarrer(Board b, CollecteurEvenements c){
-        InterfaceGraphique vue = new InterfaceGraphique(b, c);
+    public static void demarrer(Game j, CollecteurEvenements c){
+        InterfaceGraphique vue = new InterfaceGraphique(j, c);
         c.ajouteInterfaceUtilisateur(vue);
         ((ControleurMediateur) c).ajouterObservateur(vue);
         SwingUtilities.invokeLater(vue);
@@ -36,15 +37,15 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     public void run(){
         frame = new JFrame("CIRCLE OF LIFE ");
         frame.setSize(900, 600);
-        dessin = new Dessin(board, p1, p2, control);
+        dessin = new Dessin(jeu, p1, p2, control);
       
         gameContainer = new JPanel(new BorderLayout());
         gameContainer.setOpaque(false);
         gameContainer.add(dessin, BorderLayout.CENTER);
 
-         p1 = new PlayerPanel(board,control,1);
-         p2 = new PlayerPanel(board,control,2);
-         actionContainer = new Action(board);
+         p1 = new PlayerPanel(jeu,control,1);
+         p2 = new PlayerPanel(jeu,control,2);
+         actionContainer = new Action(jeu);
 
         root = new PanelRoot();
 

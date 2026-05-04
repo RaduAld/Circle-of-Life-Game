@@ -1,6 +1,7 @@
 package Vue;
 
 import Modele.Board;
+import Modele.Game;
 
 
 import javax.swing.*;
@@ -9,14 +10,14 @@ import java.awt.*;
 public class PlayerPanel extends JPanel {
        private final Color PLAYER_COLOR;
        JLabel joueur, nbrManger, nbrPoser;
-       Board b;
+       Game jeu;
        CollecteurEvenements control;
        int playernum;
 
-       public PlayerPanel( Board b,CollecteurEvenements c,int num){
+       public PlayerPanel( Game j,CollecteurEvenements c,int num){
               setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
               setOpaque(false);
-              this.b=b;
+              jeu = j;
               this.control = c;
               this.playernum = num;
              if(playernum==1)
@@ -42,7 +43,7 @@ public class PlayerPanel extends JPanel {
 
        }
        void update(){
-              Board b = control.getBoard(); 
+              //Board b = control.getBoard();
               nbrManger.setText("Captures : "+ b.getCaptured(playernum-1) +"/20");
               nbrPoser.setText("Jetons : "+b.getTokenCount(playernum-1));
               joueur.setForeground(PLAYER_COLOR);

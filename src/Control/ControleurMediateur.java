@@ -8,7 +8,7 @@ import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
 public class ControleurMediateur extends Observable implements CollecteurEvenements {
-    Board board;
+    Game jeu;
     InterfaceUtilisateur vue;
 //    int lenteurPas;
 //    Animation mouvement;
@@ -19,10 +19,10 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
 //    AnimationJeuAutomatique animationIA;
 //    IA[] joueursAutomatiques; // on va faire jouer des IA l'une contre l'autre, ça remplace joueurAutomatique
     int[] typeJoueur; // humain == 0, IA == 1
-    int joueurCourant = 0;
+    int joueurCourant;
 //
-   public ControleurMediateur(Board board) {
-        this.board = board;
+   public ControleurMediateur(Game j) {
+       jeu = j;
 //        mouvement = null;
 //        // Tant qu'on ne reçoit pas d'évènement temporel, on n'est pas sur que les
 //        // animations soient supportées (ex. interface textuelle)
@@ -81,9 +81,9 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
 //        }
 //    }
 //
-//    public void nouvellePartie(){
-//        jeu.nouvellePartie();
-//    }
+    public void nouvellePartie(){
+        jeu.initialiseGame(0);
+    }
 //
 ////    public void basculeModeJoueur(){
 ////        //flip entre joueur et IA dans le player
@@ -108,23 +108,18 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
 //
    
     //pour avertir vue de la nouvelle board
-    public Board getBoard() { return board; }
+    //public Board getBoard() { return board; }
 
     public void clicSouris(Cell c){
-    //marche pas j pas compris le prblm ???? je parle de la condition
-    //if(board.checkWinner(20) != -1 && c!=null){
-        if (c != null && board.isEmpty(c) && board.checkWinner(20) == -1) {
-            Board nextBoard = board.applyMove(c, joueurCourant);
-            if (nextBoard != board) {
-                board = nextBoard;
-                joueurCourant = 1 - joueurCourant;
-                notifierObservateurs();
-                System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);
-                int winner = board.checkWinner(20);
-                if (winner != -1) {
-                    System.out.println("Partie finie ! Le vainqueur est : Joueur " + winner);
-                }
-            }
+        if (c != null && !jeu.gameOver()) {
+           jeu.play(c);
+           jeu.changePlayer();
+           notifierObservateurs();
+           System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);
+           int winner = jeu.hasWin();
+           if (winner != -1) {
+                System.out.println("Partie finie ! Le vainqueur est : Joueur " + winner);
+           }
         }
         //}
        // return;
