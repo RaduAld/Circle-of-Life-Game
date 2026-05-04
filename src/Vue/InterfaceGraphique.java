@@ -37,15 +37,15 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
         gameContainer.setOpaque(false);
         gameContainer.add(dessin, BorderLayout.CENTER);
 
-        Control1 c1 = new Control1(board);
-        Control2 c2 = new Control2(board);
+        PlayerPanel p1 = new PlayerPanel(board,control,1);
+        PlayerPanel p2 = new PlayerPanel(board,control,2);
         Action actionContainer = new Action(board);
 
         root = new PanelRoot();
 
-        root.add(c1, BorderLayout.EAST);
+        root.add(p1, BorderLayout.EAST);
         root.add(gameContainer, BorderLayout.CENTER);
-        root.add(c2, BorderLayout.WEST);
+        root.add(p2,BorderLayout.WEST);
         root.add(actionContainer, BorderLayout.SOUTH);
 
       
