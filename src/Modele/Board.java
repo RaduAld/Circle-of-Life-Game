@@ -71,6 +71,14 @@ public class Board  {
         }
     }
 
+    // To be used strictly for AI
+    public Board(String[] liste){
+        this.p0           = new BigInteger(liste[0]);
+        this.p1           = new BigInteger(liste[1]);
+        this.capturedByP0 = Integer.parseInt(liste[2]);
+        this.capturedByP1 = Integer.parseInt(liste[3]);
+    }
+
     // constructeur interne utilisé par copy() et applyMove() - ne reconstruit pas les tables
     private Board(BigInteger p0, BigInteger p1, int capturedByP0, int capturedByP1) {
         this.p0           = p0;
@@ -204,6 +212,11 @@ public class Board  {
         if (idx == null) return this;
         return applyMoveBit(idx, player);
     }
+
+    /*Pentru RAdu:
+    we cant make a shape with more than 4 cells. SO if i press next to a shape that already has 4cells, it should apply
+    *
+    * */
 
     // Identique à applyMove() mais prend directement un indice spiral
     // Évite l'allocation de Cell dans les boucles internes du solveur
@@ -395,6 +408,13 @@ public class Board  {
             if (capturedByP1 > capturedByP0) return 1;
         }
         return -1;
+    }
+
+    // TO be used for AI only
+    public boolean checkLosingByPlayer(int captureThreshold, int player) {
+        int w = checkWinner(captureThreshold);
+        if (player == 1) return (w==0);
+        return w==1;
     }
 
     // Retourne true s'il reste au moins une cellule vide pour poser un jeton
