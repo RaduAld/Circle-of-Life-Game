@@ -4,7 +4,7 @@ public class Game {
     Board board;
     Historic historique;
     int currentPlayer;
-    private final int captureTreshold = 20;
+
     //On choisit le joueur qui démarre
     public Game(int joueur){
         board = new Board();
@@ -18,10 +18,14 @@ public class Game {
         }
     }
     //Pour démarer une partie sauvegardée dans un fichier
-    Game(String path){
+    public Game(String path){
         board = new Board();
         historique = new Historic(path);
         currentPlayer = historique.lastCoup().nextPlayer();
+    }
+
+    public Board getBoard(){
+        return board;
     }
 
     public void initialiseGame(int player){
@@ -30,7 +34,7 @@ public class Game {
         currentPlayer = player;
     }
 
-    void initialiseGameFromFile(String path){
+    public void initialiseGameFromFile(String path){
         board = new Board();
         historique = new Historic(path);
         currentPlayer = historique.lastCoup().nextPlayer();
@@ -42,7 +46,7 @@ public class Game {
         changePlayer();
     }
 
-    int undo(){
+    public int undo(){
         if (!historique.canUndo()){
             System.err.println("Impossible d'annuler le coup.");
             return 1;
@@ -57,7 +61,7 @@ public class Game {
         currentPlayer =( currentPlayer+1 ) % 2;
     }
 
-    int redo(){
+    public int redo(){
         if (!historique.canRedo()){
             System.err.println("Impossible d'annuler le coup.");
             return 1;
@@ -68,16 +72,7 @@ public class Game {
         return 0;
     }
 
-    int saveGame(String path){
+    public int saveGame(String path){
         return historique.saveToFile(path);
-    }
-    public boolean gameOver(){
-        return !board.hasLegalMoves() || hasWin()!=-1;
-    }
-    public int hasWin(){
-        return board.checkWinner(captureTreshold);
-    }
-    public Board returnBoard(){
-        return board;
     }
 }

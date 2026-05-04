@@ -6,8 +6,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Initialise le plateau - les tables statiques sont construites ici une seule fois
         Game jeu = new Game(0);
+        // Initialise le plateau - les tables statiques sont construites ici une seule fois
+        Board board = jeu.getBoard();
         ControleurMediateur  control =  new ControleurMediateur(jeu);
         InterfaceGraphique.demarrer(jeu, control);
 
@@ -18,56 +19,64 @@ public class Main {
         // Tour 1 - Joueur 0 pose au centre (x=0, y=0, z=0)
         // ------------------------------------------
         System.out.println("Tour 1 - Joueur 0 pose au centre (x=0, y=0, z=0)");
-        board = board.applyMove(new Cell(0, 0, 0), 0);
+        jeu.play(new Cell(0, 0, 0));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 2 - Joueur 1 pose à droite du centre
         // ------------------------------------------
         System.out.println("Tour 2 - Joueur 1 pose en (x=1, y=0, z=-1)");
-        board = board.applyMove(new Cell(1, 0, -1), 1);
+        jeu.play(new Cell(1, 0, -1));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 3 - Joueur 0 étend son groupe vers le bas-droite
         // ------------------------------------------
         System.out.println("Tour 3 - Joueur 0 pose en (x=0, y=1, z=-1)");
-        board = board.applyMove(new Cell(0, 1, -1), 0);
+        jeu.play(new Cell(0, 1, -1));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 4 - Joueur 1 pose en haut-droite
         // ------------------------------------------
         System.out.println("Tour 4 - Joueur 1 pose en (x=1, y=-1, z=0)");
-        board = board.applyMove(new Cell(1, -1, 0), 1);
+        jeu.play(new Cell(1, -1, 0));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 5 - Joueur 0 pose à gauche du centre
         // ------------------------------------------
         System.out.println("Tour 5 - Joueur 0 pose en (x=-1, y=0, z=1)");
-        board = board.applyMove(new Cell(-1, 0, 1), 0);
+        jeu.play(new Cell(-1, 0, 1));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 6 - Joueur 1 pose en haut-gauche du centre
         // ------------------------------------------
         System.out.println("Tour 6 - Joueur 1 pose en (x=0, y=-1, z=1)");
-        board = board.applyMove(new Cell(0, -1, 1), 1);
+        jeu.play(new Cell(0, -1, 1));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 7 - Joueur 0 complète son groupe en bas-gauche
         // ------------------------------------------
         System.out.println("Tour 7 - Joueur 0 pose en (x=-1, y=1, z=0)");
-        board = board.applyMove(new Cell(-1, 1, 0), 0);
+        jeu.play(new Cell(-1, 1, 0));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
         // Tour 8 - Joueur 1 pose plus loin à droite
         // ------------------------------------------
         System.out.println("Tour 8 - Joueur 1 pose en (x=2, y=0, z=-2)");
-        board = board.applyMove(new Cell(2, 0, -2), 1);
+        jeu.play(new Cell(2, 0, -2));
+        board = jeu.getBoard();
         System.out.println(BoardUtils.boardToString(board));
 
         // ------------------------------------------
