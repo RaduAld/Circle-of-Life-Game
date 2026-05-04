@@ -43,7 +43,7 @@ public class PlayerPanel extends JPanel {
 
        }
        void update(){
-              //Board b = control.getBoard();
+              Board b = jeu.getBoard();
               nbrManger.setText("Captures : "+ b.getCaptured(playernum-1) +"/20");
               nbrPoser.setText("Jetons : "+b.getTokenCount(playernum-1));
               joueur.setForeground(PLAYER_COLOR);

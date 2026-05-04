@@ -45,7 +45,7 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
 
          p1 = new PlayerPanel(jeu,control,1);
          p2 = new PlayerPanel(jeu,control,2);
-         actionContainer = new Action(jeu);
+         actionContainer = new Action(jeu.getBoard());
 
         root = new PanelRoot();
 

@@ -4,6 +4,7 @@ public class Game {
     Board board;
     Historic historique;
     int currentPlayer;
+    private final int captureTreshold = 20;
 
     //On choisit le joueur qui démarre
     public Game(int joueur){
@@ -74,5 +75,15 @@ public class Game {
 
     public int saveGame(String path){
         return historique.saveToFile(path);
+    }
+
+    public boolean gameOver(){
+        return !board.hasLegalMoves() || hasWin()!=-1;
+    }
+    public int hasWin(){
+        return board.checkWinner(captureTreshold);
+    }
+    public Board returnBoard(){
+        return board;
     }
 }
