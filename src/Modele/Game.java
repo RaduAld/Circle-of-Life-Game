@@ -1,10 +1,13 @@
 package Modele;
 
-public class Game {
+import Patterns.Observable;
+
+public class Game extends Observable {
     Board board;
     Historic historique;
-    int currentPlayer;
+    public int currentPlayer;
     private final int captureTreshold = 20;
+
     //On choisit le joueur qui démarre
     public Game(int joueur){
         board = new Board();
@@ -18,7 +21,7 @@ public class Game {
         }
     }
     //Pour démarer une partie sauvegardée dans un fichier
-    Game(String path){
+    public Game(String path){
         board = new Board();
         historique = new Historic(path);
         currentPlayer = historique.lastCoup().nextPlayer();
@@ -30,7 +33,7 @@ public class Game {
         currentPlayer = player;
     }
 
-    void initialiseGameFromFile(String path){
+    public void initialiseGameFromFile(String path){
         board = new Board();
         historique = new Historic(path);
         currentPlayer = historique.lastCoup().nextPlayer();
@@ -40,9 +43,10 @@ public class Game {
         historique.play(c, currentPlayer, board);
         board = board.applyMove(c, currentPlayer);
         changePlayer();
+        notifierObservateurs();
     }
 
-    int undo(){
+    public int undo(){
         if (!historique.canUndo()){
             System.err.println("Impossible d'annuler le coup.");
             return 1;
@@ -50,14 +54,19 @@ public class Game {
         Coup c = historique.undo();
         board = c.boardAvant;
         currentPlayer = c.nextPlayer();
+        notifierObservateurs();
         return 0;
+    }
+
+    public Board getBoard(){
+        return board;
     }
 
     public void changePlayer(){
         currentPlayer =( currentPlayer+1 ) % 2;
     }
 
-    int redo(){
+    public int redo(){
         if (!historique.canRedo()){
             System.err.println("Impossible d'annuler le coup.");
             return 1;
@@ -65,12 +74,14 @@ public class Game {
         Coup c = historique.redo();
         board = c.boardAvant.applyMove(c.cellule, c.joueur);
         currentPlayer = c.nextPlayer();
+        notifierObservateurs();
         return 0;
     }
 
-    int saveGame(String path){
+    public int saveGame(String path){
         return historique.saveToFile(path);
     }
+
     public boolean gameOver(){
         return !board.hasLegalMoves() || hasWin()!=-1;
     }

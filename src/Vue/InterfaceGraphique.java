@@ -29,7 +29,6 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     public static void demarrer(Game j, CollecteurEvenements c){
         InterfaceGraphique vue = new InterfaceGraphique(j, c);
         c.ajouteInterfaceUtilisateur(vue);
-        ((ControleurMediateur) c).ajouterObservateur(vue);
         SwingUtilities.invokeLater(vue);
     }
 
@@ -37,15 +36,15 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     public void run(){
         frame = new JFrame("CIRCLE OF LIFE ");
         frame.setSize(900, 600);
+
+         p1 = new PlayerPanel(jeu,control,1);
+         p2 = new PlayerPanel(jeu,control,2);
+         actionContainer = new Action();
         dessin = new Dessin(jeu, p1, p2, control);
       
         gameContainer = new JPanel(new BorderLayout());
         gameContainer.setOpaque(false);
         gameContainer.add(dessin, BorderLayout.CENTER);
-
-         p1 = new PlayerPanel(jeu,control,1);
-         p2 = new PlayerPanel(jeu,control,2);
-         actionContainer = new Action(jeu);
 
         root = new PanelRoot();
 

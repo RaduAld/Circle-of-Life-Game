@@ -42,10 +42,11 @@ public class PlayerPanel extends JPanel {
               update();
 
        }
+
        void update(){
-              //Board b = control.getBoard();
-              nbrManger.setText("Captures : "+ b.getCaptured(playernum-1) +"/20");
-              nbrPoser.setText("Jetons : "+b.getTokenCount(playernum-1));
+             // Board b = control.getBoard();
+              nbrManger.setText("Captures : "+ jeu.returnBoard().getCaptured(playernum-1) +"/20");
+              nbrPoser.setText("Jetons : "+jeu.returnBoard().getTokenCount(playernum-1));
               joueur.setForeground(PLAYER_COLOR);
               repaint();
        }

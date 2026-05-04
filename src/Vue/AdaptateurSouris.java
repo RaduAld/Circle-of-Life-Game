@@ -22,5 +22,7 @@ public class AdaptateurSouris extends MouseAdapter{
         Cell c = d.conversionPixelCell(e.getX(), e.getY());
         d.repaint();
         control.clicSouris(c);
+        p1.update();
+        p2.update();
     }
 }

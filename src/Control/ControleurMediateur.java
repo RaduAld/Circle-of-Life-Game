@@ -3,11 +3,10 @@ package Control;
 //
 //import Global.Configuration;
 import Modele.*;
-import Patterns.Observable;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceUtilisateur;
 
-public class ControleurMediateur extends Observable implements CollecteurEvenements {
+public class ControleurMediateur implements CollecteurEvenements {
     Game jeu;
     InterfaceUtilisateur vue;
 //    int lenteurPas;
@@ -19,7 +18,7 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
 //    AnimationJeuAutomatique animationIA;
 //    IA[] joueursAutomatiques; // on va faire jouer des IA l'une contre l'autre, ça remplace joueurAutomatique
     int[] typeJoueur; // humain == 0, IA == 1
-    int joueurCourant;
+
 //
    public ControleurMediateur(Game j) {
        jeu = j;
@@ -113,9 +112,8 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
     public void clicSouris(Cell c){
         if (c != null && !jeu.gameOver()) {
            jeu.play(c);
-           jeu.changePlayer();
-           notifierObservateurs();
-           System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);
+           //System.out.println(BoardUtils.boardToString(jeu.returnBoard()));
+           System.out.println("Coup joué ! Joueur suivant : " + jeu.currentPlayer);
            int winner = jeu.hasWin();
            if (winner != -1) {
                 System.out.println("Partie finie ! Le vainqueur est : Joueur " + winner);
