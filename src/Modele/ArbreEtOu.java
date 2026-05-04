@@ -45,7 +45,7 @@ public class ArbreEtOu {
     }
 
     boolean evaluate(String newConfig){
-        // if configuration already exists
+        // if configuration already existss
         for (String configuration : this.arbre.keySet()) {
             if (configuration.equals(newConfig)){
                 return this.arbre.get(configuration);

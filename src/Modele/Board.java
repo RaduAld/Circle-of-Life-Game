@@ -213,11 +213,6 @@ public class Board  {
         return applyMoveBit(idx, player);
     }
 
-    /*Pentru RAdu:
-    we cant make a shape with more than 4 cells. SO if i press next to a shape that already has 4cells, it should apply
-    *
-    * */
-
     // Identique à applyMove() mais prend directement un indice spiral
     // Évite l'allocation de Cell dans les boucles internes du solveur
     public Board applyMoveBit(int spiralIdx, int player) {
