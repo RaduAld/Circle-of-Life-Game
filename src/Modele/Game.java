@@ -1,9 +1,11 @@
 package Modele;
 
-public class Game {
+import Patterns.Observable;
+
+public class Game extends Observable {
     Board board;
     Historic historique;
-    int currentPlayer;
+    public int currentPlayer;
     private final int captureTreshold = 20;
 
     //On choisit le joueur qui démarre
@@ -25,10 +27,6 @@ public class Game {
         currentPlayer = historique.lastCoup().nextPlayer();
     }
 
-    public Board getBoard(){
-        return board;
-    }
-
     public void initialiseGame(int player){
         board = new Board();
         historique.clearHistoric();
@@ -45,6 +43,7 @@ public class Game {
         historique.play(c, currentPlayer, board);
         board = board.applyMove(c, currentPlayer);
         changePlayer();
+        notifierObservateurs();
     }
 
     public int undo(){
@@ -55,7 +54,12 @@ public class Game {
         Coup c = historique.undo();
         board = c.boardAvant;
         currentPlayer = c.nextPlayer();
+        notifierObservateurs();
         return 0;
+    }
+
+    public Board getBoard(){
+        return board;
     }
 
     public void changePlayer(){
@@ -70,6 +74,7 @@ public class Game {
         Coup c = historique.redo();
         board = c.boardAvant.applyMove(c.cellule, c.joueur);
         currentPlayer = c.nextPlayer();
+        notifierObservateurs();
         return 0;
     }
 

@@ -9,10 +9,8 @@ import java.awt.*;
 public class Action extends JPanel{
 
     JButton Annuler, Abandonner, Confirmer ;
-    Board b;
 
-    public Action(Board b){
-        this.b =b;
+    public Action(){
         Annuler = Utilities.createJButton("Annuler");
         Abandonner = Utilities.createJButton("Abandonner");
         Confirmer = Utilities.createJButton("Confirmer");
