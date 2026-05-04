@@ -31,7 +31,7 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     @Override
     public void run(){
         frame = new JFrame("CIRCLE OF LIFE ");
-        frame.setSize(800, 500);
+        frame.setSize(900, 500);
         dessin = new Dessin(board, control);
         gameContainer = new JPanel(new BorderLayout());
         gameContainer.setOpaque(false);
