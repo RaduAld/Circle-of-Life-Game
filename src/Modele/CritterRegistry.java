@@ -1,183 +1,101 @@
 package Modele;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class CritterRegistry {
 
     // ------------------------------------------
-    // Chaîne alimentaire complète - 13 espèces en boucle
-    // ------------------------------------------
+    // Les 12 Critters — définis par leur rang, nom, et forme canonique
     //
-    //  Rang  Nom          Taille  Mange
-    //   0    singleton      1     4-line (rang 11)
-    //   1    pair           2     singleton (rang 0)
-    //   2    3-bend         3     pair (rang 1)
-    //   3    3-line         3     3-bend (rang 2)
-    //   4    triangle       3     3-line (rang 3)
-    //   5    key            4     triangle (rang 4)
-    //   6    sled           4     key (rang 5)
-    //   7    arch           4     sled (rang 6)
-    //   8    snake          4     arch (rang 7)
-    //   9    diamond        4     snake (rang 8)
-    //  10    propeller      4     diamond (rang 9)
-    //  11    4-line         4     propeller (rang 10)
-    //  12    (boucle vers singleton)
+    // La chaîne alimentaire est une boucle de 12 :
+    // chaque Critter mange celui dont le rang est (son rang - 1) modulo 12
     //
-    // Source : Board Game Arena - Circle of Life rules
-    // Une espèce de rang R mange l'espèce de rang (R - 1 + 13) % 13
-
-    // ------------------------------------------
-    // Définition des formes en coordonnées cube (x, y) - z = -x-y implicite
-    // Chaque tableau int[][] est une liste de cellules relatives à la forme
-    // La normalisation canonique est appliquée automatiquement par Species()
-    // ------------------------------------------
-
-    // Monohex (1 cellule)
-    // singleton : une seule cellule isolée
-    private static final int[][] SHAPE_SINGLETON = {
-            {0, 0}
-    };
-
-    // Dihex (2 cellules)
-    // pair : deux cellules adjacentes
-    private static final int[][] SHAPE_PAIR = {
-            {0, 0}, {1, 0}
-    };
-
-    // Trihex (3 cellules) - il existe 3 formes libres distinctes
-    // 3-bend : angle à 120° (forme en L)
-    //       O
-    //      O O
-    private static final int[][] SHAPE_3BEND = {
-            {0, 0}, {1, 0}, {0, 1}
-    };
-
-    // 3-line : trois cellules en ligne droite
-    //      O O O
-    private static final int[][] SHAPE_3LINE = {
-            {0, 0}, {1, 0}, {2, 0}
-    };
-
-    // triangle : trois cellules formant un triangle compact (triplet compact)
-    //       O
-    //      O O    (triangle hexagonal - voisins deux-à-deux)
-    private static final int[][] SHAPE_TRIANGLE = {
-            {0, 0}, {1, 0}, {0, -1}
-    };
-
-    // Tétrahex (4 cellules) - il existe 7 formes libres distinctes
-    // key : forme en L (3 en ligne + 1 perpendiculaire au bout)
-    //      O
-    //      O
-    //      O O
-    private static final int[][] SHAPE_KEY = {
-            {0, 0}, {1, 0}, {2, 0}, {2, 1}
-    };
-
-    // sled : forme en S/Z (deux paires décalées)
-    //       O O
-    //      O O
-    private static final int[][] SHAPE_SLED = {
-            {0, 0}, {1, 0}, {1, 1}, {2, 1}
-    };
-
-    // arch : forme en U (3 en ligne + 1 perpendiculaire au milieu)
-    //      O O O
-    //        O
-    private static final int[][] SHAPE_ARCH = {
-            {0, 0}, {1, 0}, {2, 0}, {1, -1}
-    };
-
-    // snake : forme en Z allongée (4 en ligne brisée)
-    //        O O
-    //      O O
-    private static final int[][] SHAPE_SNAKE = {
-            {0, 0}, {1, 0}, {0, -1}, {1, 1}
-    };
-
-    // diamond : quatre cellules formant un losange compact
-    //       O O
-    //      O O
-    //   (carré hexagonal 2x2)
-    private static final int[][] SHAPE_DIAMOND = {
-            {0, 0}, {1, 0}, {0, 1}, {1, -1}
-    };
-
-    // propeller : triangle + 1 cellule en extension (forme asymétrique à 3 branches)
-    //        O
-    //       O O
-    //      O
-    private static final int[][] SHAPE_PROPELLER = {
-            {0, 0}, {1, 0}, {0, 1}, {-1, 1}
-    };
-
-    // 4-line : quatre cellules en ligne droite
-    //      O O O O
-    private static final int[][] SHAPE_4LINE = {
-            {0, 0}, {1, 0}, {2, 0}, {3, 0}
-    };
-
-    // ------------------------------------------
-    // Catalogue complet - construit une seule fois au chargement de la classe
+    //  Rang  Nom           Taille  Structure
+    //   0    singleton       1     une cellule seule
+    //   1    pair            2     deux cellules adjacentes
+    //   2    3-bend          3     coude : A touche B et C, B et C non adjacents
+    //   3    3-line          3     ligne droite
+    //   4    triangle        3     toutes les 3 mutuellement adjacentes
+    //   5    key             4     L-shape : ligne de 3 + 1 à UNE EXTRÉMITÉ
+    //   6    sled            4     S-shape chiral 1 (zigzag décalé)
+    //   7    arch            4     T-shape : ligne de 3 + 1 AU MILIEU (+ arête extra)
+    //   8    snake           4     S-shape chiral 2 (miroir du sled)
+    //   9    diamond         4     losange compact (5 arêtes, degré max 3)
+    //  10    propeller       4     Y-shape : 1 centre touche les 3 autres, eux non adjacents
+    //  11    4-line          4     ligne droite de 4
     // ------------------------------------------
 
-    // Liste ordonnée par rang - ALL.get(i).rank == i
-    public static final List<Critter> ALL = buildRegistry();
+    public static final Critter SINGLETON  = new Critter("singleton",  0,  new int[][]{{0,0,0}});
+    public static final Critter PAIR       = new Critter("pair",       1,  new int[][]{{0,0,0},{0,1,-1}});
+    public static final Critter BEND3      = new Critter("3-bend",     2,  new int[][]{{0,0,0},{0,1,-1},{1,-1,0}});
+    public static final Critter LINE3      = new Critter("3-line",     3,  new int[][]{{0,0,0},{0,1,-1},{0,2,-2}});
+    public static final Critter TRIANGLE   = new Critter("triangle",   4,  new int[][]{{0,0,0},{0,1,-1},{1,0,-1}});
+    public static final Critter KEY        = new Critter("key",        5,  new int[][]{{0,0,0},{0,1,-1},{0,2,-2},{1,-1,0}});
+    public static final Critter SLED       = new Critter("sled",       6,  new int[][]{{0,0,0},{0,1,-1},{1,-1,0},{1,1,-2}});
+    public static final Critter ARCH       = new Critter("arch",       7,  new int[][]{{0,0,0},{0,1,-1},{0,2,-2},{1,1,-2}});
+    public static final Critter SNAKE      = new Critter("snake",      8,  new int[][]{{0,0,0},{0,1,-1},{1,-2,1},{1,-1,0}});
+    public static final Critter DIAMOND    = new Critter("diamond",    9,  new int[][]{{0,0,0},{0,1,-1},{1,-1,0},{1,0,-1}});
+    public static final Critter PROPELLER  = new Critter("propeller",  10, new int[][]{{0,0,0},{1,-2,1},{1,-1,0},{2,-1,-1}});
+    public static final Critter LINE4      = new Critter("4-line",     11, new int[][]{{0,0,0},{0,1,-1},{0,2,-2},{0,3,-3}});
 
-    private static List<Critter> buildRegistry() {
-        List<Critter> list = new ArrayList<>();
-        // L'ordre de création doit correspondre au rang
-        list.add(new Critter("singleton",  0,  SHAPE_SINGLETON));
-        list.add(new Critter("pair",       1,  SHAPE_PAIR));
-        list.add(new Critter("3-bend",     2,  SHAPE_3BEND));
-        list.add(new Critter("3-line",     3,  SHAPE_3LINE));
-        list.add(new Critter("triangle",   4,  SHAPE_TRIANGLE));
-        list.add(new Critter("key",        5,  SHAPE_KEY));
-        list.add(new Critter("sled",       6,  SHAPE_SLED));
-        list.add(new Critter("arch",       7,  SHAPE_ARCH));
-        list.add(new Critter("snake",      8,  SHAPE_SNAKE));
-        list.add(new Critter("diamond",    9,  SHAPE_DIAMOND));
-        list.add(new Critter("propeller",  10, SHAPE_PROPELLER));
-        list.add(new Critter("4-line",     11, SHAPE_4LINE));
-        return list;
+    // Tableau ordonné par rang — ALL[i].rank == i
+    public static final Critter[] ALL = {
+            SINGLETON, PAIR, BEND3, LINE3, TRIANGLE,
+            KEY, SLED, ARCH, SNAKE, DIAMOND, PROPELLER, LINE4
+    };
+
+    // Chaîne alimentaire explicite — FOOD_CHAIN[i] est mangé par ALL[i]
+    // Lire comme : ALL[i] mange FOOD_CHAIN[i]
+    //
+    //   ALL[0]  singleton  mange  LINE4      (rank 11)
+    //   ALL[1]  pair       mange  SINGLETON  (rank  0)
+    //   ALL[2]  3-bend     mange  PAIR       (rank  1)
+    //   ALL[3]  3-line     mange  BEND3      (rank  2)
+    //   ALL[4]  triangle   mange  LINE3      (rank  3)
+    //   ALL[5]  key        mange  TRIANGLE   (rank  4)
+    //   ALL[6]  sled       mange  KEY        (rank  5)
+    //   ALL[7]  arch       mange  SLED       (rank  6)
+    //   ALL[8]  snake      mange  ARCH       (rank  7)
+    //   ALL[9]  diamond    mange  SNAKE      (rank  8)
+    //   ALL[10] propeller  mange  DIAMOND    (rank  9)
+    //   ALL[11] 4-line     mange  PROPELLER  (rank 10)
+
+    // Vérification d'intégrité au chargement de la classe
+    static {
+        // chaque forme canonique doit être unique
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (Critter c : ALL) {
+            String key = java.util.Arrays.toString(c.canonicalShape);
+            if (!seen.add(key))
+                throw new IllegalStateException("Collision canonique : " + c.name);
+        }
+        // le tableau doit être ordonné par rang
+        for (int i = 0; i < ALL.length; i++)
+            if (ALL[i].rank != i)
+                throw new IllegalStateException("Rang incorrect à l'index " + i + " : " + ALL[i].name);
     }
 
     // ------------------------------------------
-    // Identification d'une espèce à partir d'un groupe de cellules
+    // Identification
     // ------------------------------------------
 
-    // Retourne l'espèce correspondant à ce groupe de cellules, ou null si aucune espèce ne correspond
-    // Un groupe de plus de 4 cellules ne peut jamais être une espèce valide (règle du jeu)
+    // Retourne le Critter correspondant à ce groupe de cellules, ou null si aucun ne correspond
     public static Critter identify(List<Cell> cells) {
-        if (cells == null || cells.size() == 0 || cells.size() > 4) return null;
-
-        // Convertit les Cell en coordonnées relatives (x, y) centrées sur la première cellule
-        int[][] raw = toRelative(cells);
-
-        // Calcule la forme canonique de ce groupe
-        int[] groupCanon = Critter.canonicalise(raw);
-
-        // Cherche dans le catalogue l'espèce dont la forme canonique correspond
-        for (Critter s : ALL) {
-            if (java.util.Arrays.equals(s.canonicalShape, groupCanon)) {
-                return s;
-            }
-        }
-
-        // Aucune correspondance - groupe de forme inconnue (ne devrait pas arriver avec 1-4 cellules)
+        if (cells == null || cells.isEmpty() || cells.size() > 4) return null;
+        int[] groupCanon = Critter.canonicalise(toRelative(cells));
+        for (Critter c : ALL)
+            if (java.util.Arrays.equals(c.canonicalShape, groupCanon)) return c;
         return null;
     }
 
-    // Convertit une liste de Cell en tableau de coordonnées (x, y) relatives
-    // Les coordonnées sont exprimées par rapport à la première cellule du groupe
+    // Convertit une liste de Cell en coordonnées cube relatives à la première cellule
     private static int[][] toRelative(List<Cell> cells) {
-        int ox = cells.get(0).x;
-        int oy = cells.get(0).y;
-        int[][] raw = new int[cells.size()][2];
+        int ox = cells.get(0).x, oy = cells.get(0).y, oz = cells.get(0).z;
+        int[][] raw = new int[cells.size()][3];
         for (int i = 0; i < cells.size(); i++) {
             raw[i][0] = cells.get(i).x - ox;
             raw[i][1] = cells.get(i).y - oy;
+            raw[i][2] = cells.get(i).z - oz;
         }
         return raw;
     }
@@ -186,24 +104,22 @@ public class CritterRegistry {
     // Relation prédateur / proie
     // ------------------------------------------
 
-    // Retourne true si predator mange prey selon la chaîne alimentaire
-    // predator mange prey si prey.rank == (predator.rank - 1 + 13) % 13
+    // Retourne true si predator mange prey
+    // predator de rang R mange prey de rang (R - 1 + 12) % 12
     public static boolean eats(Critter predator, Critter prey) {
         if (predator == null || prey == null) return false;
-        return prey.rank == Math.floorMod(predator.rank - 1, ALL.size());
+        return prey.rank == Math.floorMod(predator.rank - 1, ALL.length);
     }
 
-    // Retourne l'espèce que predator peut manger (sa proie directe)
+    // Retourne la proie directe de predator
     public static Critter preyOf(Critter predator) {
         if (predator == null) return null;
-        int preyRank = Math.floorMod(predator.rank - 1, ALL.size());
-        return ALL.get(preyRank);
+        return ALL[Math.floorMod(predator.rank - 1, ALL.length)];
     }
 
-    // Retourne l'espèce qui mange predator (son prédateur direct)
+    // Retourne le prédateur direct de prey
     public static Critter predatorOf(Critter prey) {
         if (prey == null) return null;
-        int predRank = (prey.rank + 1) % ALL.size();
-        return ALL.get(predRank);
+        return ALL[(prey.rank + 1) % ALL.length];
     }
 }

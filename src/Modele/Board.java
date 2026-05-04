@@ -196,6 +196,22 @@ public class Board  {
         return result;
     }
 
+    // Retourne les cellules où le joueur peut légalement poser un jeton
+    // (cellules vides ne créant pas un groupe de >4 pierres)
+    public List<Cell> getLegalMoves(int player) {
+        BigInteger playerMask = player == 0 ? p0 : p1;
+        List<Cell> moves      = new ArrayList<>();
+        BigInteger temp       = getEmptyMask();
+        while (!temp.equals(BigInteger.ZERO)) {
+            int idx              = temp.getLowestSetBit();
+            temp                 = temp.clearBit(idx);
+            BigInteger hypothetical = playerMask.or(BigInteger.ONE.shiftLeft(idx));
+            BigInteger group        = floodFillMask(idx, hypothetical);
+            if (group.bitCount() <= 4) moves.add(spiralCells[idx]);
+        }
+        return moves;
+    }
+
     // Retourne le nombre de jetons actuellement posés sur le plateau pour ce joueur
     public int getTokenCount(int player) {
         return BoardUtils.popCount(player == 0 ? p0 : p1);
@@ -209,7 +225,7 @@ public class Board  {
     // Immuable - ne modifie pas l'instance courante - résout les captures automatiquement
     public Board applyMove(Cell c, int player) {
         Integer idx = cellToSpiral.get(c);
-        if (idx == null) return this;
+        if (idx == null) return null;
         return applyMoveBit(idx, player);
     }
 
@@ -220,40 +236,47 @@ public class Board  {
 
         // le coup n'est légal que sur une cellule vide
         if (!p0.and(bit).equals(BigInteger.ZERO) || !p1.and(bit).equals(BigInteger.ZERO)) {
-            return this;
+            return null;
+        }
+
+        // on ne peut pas créer un Critter de plus de 4 cellules
+        // vérifie que le jeton posé ne fusionnerait pas des groupes alliés dépassant 4
+        BigInteger playerMask = player == 0 ? p0 : p1;
+        BigInteger newPlayerMask = playerMask.or(bit);
+        // calcule la taille du groupe qui contiendrait le nouveau jeton
+        BigInteger newGroup = floodFillMask(spiralIdx, newPlayerMask);
+        if (newGroup.bitCount() > 4) {
+            return null; // coup illégal
         }
 
         // pose le jeton : crée de nouveaux masques sans modifier les originaux
-        BigInteger newP0 = player == 0 ? p0.or(bit) : p0;
-        BigInteger newP1 = player == 1 ? p1.or(bit) : p1;
+        BigInteger newP0 = player == 0 ? newPlayerMask : p0;
+        BigInteger newP1 = player == 1 ? newPlayerMask : p1;
         Board next       = new Board(newP0, newP1, capturedByP0, capturedByP1);
 
-        // résolution des captures : cherche les groupes ennemis adjacents mangés
-        int enemy                    = 1 - player;
-        BigInteger capturedAll       = BigInteger.ZERO;
-        List<BigInteger> myGroups    = next.getAllGroups(player);
-        List<BigInteger> enemyGroups = next.getAllGroups(enemy);
+        // résolution des captures : SEUL le Critter nouvellement formé peut manger
+        // règle du jeu : "the critter you evolved must eat all enemy critters adjacent to it"
+        // on identifie le Critter évolué = le groupe contenant le jeton qui vient d'être posé
+        int enemy = 1 - player;
+        BigInteger capturedAll = BigInteger.ZERO;
 
-        for (BigInteger enemyGroup : enemyGroups) {
-            // identifie le Critter ennemie à partir de ses cellules
-            Critter enemyCritters = CritterRegistry.identify(next.groupToCells(enemyGroup));
-            if (enemyCritters == null) continue;
+        // le groupe évolué est celui qui contient la cellule nouvellement posée
+        BigInteger evolvedGroup = newGroup;
+        Critter evolvedCritter  = CritterRegistry.identify(next.groupToCells(evolvedGroup));
 
-            for (BigInteger myGroup : myGroups) {
-                // identifie mon Critter
-                Critter myCritter = CritterRegistry.identify(next.groupToCells(myGroup));
-                if (myCritter == null) continue;
-
-                // capture si mon Critter mange le Critter ennemie ET les groupes sont adjacents
-                if (CritterRegistry.eats(myCritter, enemyCritters)
-                        && next.areGroupsAdjacent(myGroup, enemyGroup)) {
+        if (evolvedCritter != null) {
+            // cherche tous les groupes ennemis adjacents au Critter évolué
+            for (BigInteger enemyGroup : next.getAllGroups(enemy)) {
+                Critter enemyCritter = CritterRegistry.identify(next.groupToCells(enemyGroup));
+                if (enemyCritter != null
+                        && CritterRegistry.eats(evolvedCritter, enemyCritter)
+                        && next.areGroupsAdjacent(evolvedGroup, enemyGroup)) {
                     capturedAll = capturedAll.or(enemyGroup);
-                    break;
                 }
             }
         }
 
-        // Supprime les cellules capturées et met à jour le compteur
+        // supprime les cellules capturées et met à jour le compteur
         if (!capturedAll.equals(BigInteger.ZERO)) {
             int capturedCount = BoardUtils.popCount(capturedAll);
             next = next.removeCaptured(capturedAll, enemy);
@@ -262,6 +285,24 @@ public class Board  {
         }
 
         return next;
+    }
+
+    // Flood fill sur un masque arbitraire (utilisé pour vérifier la taille avant placement)
+    private BigInteger floodFillMask(int startIdx, BigInteger playerMask) {
+        BigInteger group    = BigInteger.ONE.shiftLeft(startIdx);
+        BigInteger frontier = group;
+        while (!frontier.equals(BigInteger.ZERO)) {
+            BigInteger expanded = BigInteger.ZERO;
+            BigInteger temp = frontier;
+            while (!temp.equals(BigInteger.ZERO)) {
+                int idx  = temp.getLowestSetBit();
+                expanded = expanded.or(neighbourMasks[idx]);
+                temp     = temp.clearBit(idx);
+            }
+            frontier = expanded.and(playerMask).andNot(group);
+            group    = group.or(frontier);
+        }
+        return group;
     }
 
     // Efface tous les bits de capturedMask du masque du joueur donné - retourne un nouveau Board immuable
@@ -376,17 +417,8 @@ public class Board  {
     }
 
     // Retourne true si p0 et p1 sont identiques entre les deux plateaux - même état de jeu
-    /*
     public boolean equals(Board other) {
         return this.p0.equals(other.p0) && this.p1.equals(other.p1);
-    }
-    */
-
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof Board)) return false;
-        Board o = (Board) other;
-        return this.p0.equals(o.p0) && this.p1.equals(o.p1);
     }
 
     // ------------------------------------------
@@ -394,22 +426,41 @@ public class Board  {
     // ------------------------------------------
 
     // Retourne 0 si joueur 0 gagne, 1 si joueur 1 gagne, -1 si la partie continue
-    // La victoire se déclenche par captures >= captureThreshold ou absence de coups légaux
-    public int checkWinner(int captureThreshold) {
+    public int checkWinner(int captureThreshold, int currentPlayer) {
         if (capturedByP0 >= captureThreshold) return 0;
         if (capturedByP1 >= captureThreshold) return 1;
-        if (!hasLegalMoves()) {
+        // un joueur gagne si l'adversaire ne peut plus poser de jeton
+        if (!hasLegalMoves(currentPlayer)) {
+            // départage par captures si aucune majorité n'est possible
             if (capturedByP0 > capturedByP1) return 0;
             if (capturedByP1 > capturedByP0) return 1;
+            // legality de captures -> le joueur actuel a rempli l'écosystème en premier
+            // selon les règles, c'est lui qui gagne (il "can't evolve on her turn")
+            return currentPlayer; // le joueur qui ne peut pas jouer déclenche la fin
         }
         return -1;
     }
 
     // TO be used for AI only
     public boolean checkLosingByPlayer(int captureThreshold, int player) {
-        int w = checkWinner(captureThreshold);
+        int w = checkWinner(captureThreshold, player);
         if (player == 1) return (w==0);
         return w==1;
+    }
+
+    // Retourne true si le joueur donné peut légalement poser un jeton quelque part:
+    // (il doit exister au moins une cellule vide qui ne crée pas un groupe de >4 pierres)
+    public boolean hasLegalMoves(int player) {
+        BigInteger playerMask = player == 0 ? p0 : p1;
+        BigInteger temp       = getEmptyMask();
+        while (!temp.equals(BigInteger.ZERO)) {
+            int idx              = temp.getLowestSetBit();
+            temp                 = temp.clearBit(idx);
+            BigInteger hypothetical = playerMask.or(BigInteger.ONE.shiftLeft(idx));
+            BigInteger group        = floodFillMask(idx, hypothetical);
+            if (group.bitCount() <= 4) return true; // coup légal trouvé
+        }
+        return false;
     }
 
     // Retourne true s'il reste au moins une cellule vide pour poser un jeton

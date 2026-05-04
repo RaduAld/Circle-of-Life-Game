@@ -40,8 +40,13 @@ public class Game extends Observable {
     }
 
     public void play(Cell c){
+        Board next = board.applyMove(c, currentPlayer);
+        if (next == null) {
+            System.err.println("Coup illégal : " + c + " - joueur inchangé.");
+            return;
+        }
         historique.play(c, currentPlayer, board);
-        board = board.applyMove(c, currentPlayer);
+        board = next;
         changePlayer();
         notifierObservateurs();
     }
@@ -83,10 +88,12 @@ public class Game extends Observable {
     }
 
     public boolean gameOver(){
-        return !board.hasLegalMoves() || hasWin()!=-1;
+        // la partie est terminée si le joueur courant ne peut plus poser de jeton,
+        // ou si un joueur a atteint le seuil de captures.
+        return !board.hasLegalMoves(currentPlayer) || hasWin() != -1;
     }
     public int hasWin(){
-        return board.checkWinner(captureTreshold);
+        return board.checkWinner(captureTreshold, currentPlayer);
     }
     public Board returnBoard(){
         return board;

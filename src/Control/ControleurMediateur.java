@@ -112,8 +112,8 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void clicSouris(Cell c){
         if (c != null && !jeu.gameOver()) {
            jeu.play(c);
-           //System.out.println(BoardUtils.boardToString(jeu.returnBoard()));
-           System.out.println("Coup joué ! Joueur suivant : " + jeu.currentPlayer);
+           System.out.println(BoardUtils.boardToString(jeu.returnBoard()));
+           //System.out.println("Coup joué ! Joueur suivant : " + jeu.currentPlayer);
            int winner = jeu.hasWin();
            if (winner != -1) {
                 System.out.println("Partie finie ! Le vainqueur est : Joueur " + winner);
