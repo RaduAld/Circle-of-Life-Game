@@ -11,7 +11,7 @@ public class Coup {
         this.boardAvant = boardAvant.copy();
     }
 
-    int changePlayer(int player){
-        return ( player+1 ) % 2;
+    int nextPlayer(){
+        return ( joueur+1 ) % 2;
     }
 }

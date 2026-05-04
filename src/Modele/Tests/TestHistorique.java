@@ -68,7 +68,13 @@ public class TestHistorique {
         historique.saveToFile("src/Modele/Tests/savingFile.txt");
         Historic newHistoric = new Historic("src/Modele/Tests/savingFile.txt");
 
-        assertEquals(newHistoric.lastCoup().boardAvant, historique.lastCoup().boardAvant);
+        while(newHistoric.canUndo()){
+            assertEquals(newHistoric.undo().boardAvant, historique.undo().boardAvant);
+        }
+        while(newHistoric.canRedo()){
+            assertEquals(newHistoric.redo().boardAvant, historique.redo().boardAvant);
+        }
+
 
     }
 
