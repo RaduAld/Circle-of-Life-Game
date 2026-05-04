@@ -117,6 +117,7 @@ public class ControleurMediateur extends Observable implements CollecteurEveneme
             Board nextBoard = board.applyMove(c, joueurCourant);
             if (nextBoard != board) {
                 board = nextBoard;
+                //System.out.println(BoardUtils.boardToString(board));
                 joueurCourant = 1 - joueurCourant;
                 notifierObservateurs();
                 System.out.println("Coup joué ! Joueur suivant : " + joueurCourant);

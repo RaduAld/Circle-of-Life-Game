@@ -49,13 +49,13 @@ public class Dessin extends JComponent {
         //pour passer d’un centre d’hexagone à l’autre horizontalement il faut multiplier par racine de 3 
         //la largeur de gauche vers droite vaut 2*cos(30) = v3
         //c.z / 2 pour prendre en compte le décalage horizontal entre les lignes dhexag sinon on aura une sorte de carre dhexag
-        int x = cx + (int)((c.x + c.z / 2.0) * taille_case * Math.sqrt(3));
+        int x = cx + (int)((c.x + c.y / 2.0) * taille_case * Math.sqrt(3));
         
         //la coord verticale 
         //les hexagones se chauvauchesnt donc entre deux centres verticalement
         //on a pas taille_case*2 mais taille_case*1.5 pour prendre en compte le chevauchement
         //y = cy + c.z * (3/2) * taille_case
-        int y = cy + (int)(c.z * (taille_case + taille_case/2));
+        int y = cy + (int)(c.y * (taille_case + taille_case/2));
 
         return new double[]{x,y};
     }
@@ -75,14 +75,14 @@ public class Dessin extends JComponent {
         //quand on  fait celle vers pixel :  y = cy + c.z * (3/2) * taille_case    ->  y = cy + dy on cherche cz  
         //dy = c.z * (3/2) * taille_case
        // du coup c.z = dy/ (3/2*t)  voili voilou
-        double z = (2.0/3.0 * dy) / taille_case;
+        double y = (2.0/3.0 * dy) / taille_case;
      
         //x=cx+dx mm que y    dx = (c.x + c.z / 2.0) * taille_case * sqrt(3);
        // dx / (sqrt(3)*taille_case) = c.x + c.z/2
        //
-        double x = dx/(Math.sqrt(3)*taille_case) - z/2;
+        double x = dx/(Math.sqrt(3)*taille_case) - y/2;
     
-        double y = -x - z;
+        double z = -x - y;
  
         // arrondi cube (conserve x+y+z=0) pour garder ue des valuers entieres
         int rx = (int)Math.round(x), ry = (int)Math.round(y), rz = (int)Math.round(z);
