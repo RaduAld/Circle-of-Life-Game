@@ -1,7 +1,7 @@
 package Control;
 
 import Global.Configuration;
-// import Modele.Coup;
+import Modele.Coup;
 import Modele.IA;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 class AnimationJeuAutomatique extends Animation {
     IA joueur;
-    // Coup enAttente = null;
+    Coup enAttente = null;
 
     AnimationJeuAutomatique(int lenteur, IA j, ControleurMediateur c) {
         super(lenteur, c);
@@ -19,7 +19,7 @@ class AnimationJeuAutomatique extends Animation {
 
     @Override
     public void miseAJour() {
-        /*if ((enAttente == null))
+        if ((enAttente == null))
             enAttente = joueur.elaboreCoup();
         if ((enAttente == null))
             Configuration.erreur("Bug : l'IA n'a joué aucun coup");
@@ -28,6 +28,6 @@ class AnimationJeuAutomatique extends Animation {
             Coup cp = enAttente;
             enAttente = null;
             control.joue(cp);
-        }*/
+        }
     }
 }
