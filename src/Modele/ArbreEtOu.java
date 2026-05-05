@@ -16,7 +16,7 @@ public class ArbreEtOu {
 
     String BoardToString(Board config){
         String vecteur = "";
-        vecteur += config.p0.toString() + "_" + config.p1.toString() + "_" + Integer.toString(config.capturedByP0) + "_" + Integer.toString(config.capturedByP1);
+        vecteur += config.p0.toString(2) + "_" + config.p1.toString(2) + "_" + Integer.toString(config.capturedByP0) + "_" + Integer.toString(config.capturedByP1);
         return vecteur;
     }
     Board StringToBoard(String vecteur){
@@ -44,13 +44,21 @@ public class ArbreEtOu {
         return children;
     }
 
-    boolean evaluate(String newConfig){
+    boolean evaluate(String newConfig, int prof){
+        // si notre profondeur = 0, alors on a atteint la prof-ième couche de l'arbre
+        //nméanmoins, on ne connait pas l'issue du jeu, il faudra implémenter l'heuristique ICI (on peut penser à comparer le nombre de pièces capturées)
+        if(prof == 0){
+            //plus tard, boolean b = board.getCaptured(player_courant) >= board.getCaptured(player_adverse);
+            //return b;
+            return false;
+        }
         // if configuration already existss
         for (String configuration : this.arbre.keySet()) {
             if (configuration.equals(newConfig)){
                 return this.arbre.get(configuration);
             }
         }
+
         //if we are in a losing config, that means that the previous player played that move (manger 0,0), so it's actually a winning move from the ai's perspective
         if (!hasPossibleMoves(newConfig) || checkLosing(20, newConfig)){
             //changing from false to true
@@ -60,7 +68,7 @@ public class ArbreEtOu {
         // generate all subtrees and evaluate them
         List<String> possible_coupes = get_children(newConfig);
         for (String configuration : possible_coupes){
-            boolean outcome = evaluate(configuration);
+            boolean outcome = evaluate(configuration, prof-1);
             // if exists winning outcome, we return true
             if (!outcome){
                 arbre.put(newConfig, true);
