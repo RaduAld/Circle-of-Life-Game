@@ -432,8 +432,8 @@ public class Board  {
         // un joueur gagne si l'adversaire ne peut plus poser de jeton
         if (!hasLegalMoves(currentPlayer)) {
             // départage par captures si aucune majorité n'est possible
-            if (capturedByP0 > capturedByP1) return 0;
-            if (capturedByP1 > capturedByP0) return 1;
+//            if (capturedByP0 > capturedByP1) return 0;
+//            if (capturedByP1 > capturedByP0) return 1;
             // legality de captures -> le joueur actuel a rempli l'écosystème en premier
             // selon les règles, c'est lui qui gagne (il "can't evolve on her turn")
             return currentPlayer; // le joueur qui ne peut pas jouer déclenche la fin

@@ -66,6 +66,9 @@ public class Game extends Observable {
     public Board getBoard(){
         return board;
     }
+    public int getCurrentPlayer(){
+        return currentPlayer;
+    }
 
     public void changePlayer(){
         currentPlayer =( currentPlayer+1 ) % 2;

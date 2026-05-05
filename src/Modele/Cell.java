@@ -87,4 +87,21 @@ public class Cell {
     public String toString() {
         return "Cell(x=" + x + ", y=" + y + ", z=" + z + ")";
     }
+
+    // ------------------------------------------
+    // Fonction for AI
+    // ------------------------------------------
+
+    public static Cell getCellule(String avant, String apres, int AIplayer){
+        String[] listeAvant = avant.split("_");
+        String[] listeApres = apres.split("_");
+        String sAvant = listeAvant[AIplayer];
+        String sApres = listeApres[AIplayer];
+        for(int i=0; i<Board.CELL_COUNT; i++){
+            if (sAvant.charAt(i) != sApres.charAt(i)){
+                return Board.spiralCells[i];
+            }
+        }
+        return null;
+    }
 }
