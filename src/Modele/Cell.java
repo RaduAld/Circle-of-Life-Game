@@ -1,5 +1,6 @@
 package Modele;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 public class Cell {
@@ -95,11 +96,17 @@ public class Cell {
     public static Cell getCellule(String avant, String apres, int AIplayer){
         String[] listeAvant = avant.split("_");
         String[] listeApres = apres.split("_");
-        String sAvant = listeAvant[AIplayer];
-        String sApres = listeApres[AIplayer];
-        for(int i=0; i<Board.CELL_COUNT; i++){
-            if (sAvant.charAt(i) != sApres.charAt(i)){
-                return Board.spiralCells[i];
+        BigInteger binaireAvant = new BigInteger(listeAvant[AIplayer]);
+        BigInteger binaireApres = new BigInteger(listeApres[AIplayer]);
+        //binaireAvant: 111010111  (0)   001111...
+        //binaireApres: 111010111  (1)   001111...
+        //donc comme en ALM : ~binaireAvant = 000101000  (1)   110000...
+        //on aura le bit changé en faisant : binaireApres & ~binaireAvant = 000000000 (1) 001111...
+        BigInteger bitChange = binaireApres.and(binaireAvant.not());
+        if(!bitChange.equals(0)) {
+            int idx = bitChange.getLowestSetBit();
+            if (idx >= 0 && idx < Board.CELL_COUNT) {
+                return Board.spiralCells[idx];
             }
         }
         return null;
