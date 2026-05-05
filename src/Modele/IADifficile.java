@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Random;
 
 public class IADifficile extends IA{
+    int MAX_TREE_DEPTH = 5;
     public IADifficile(Game g){
         //remember
         this.game = g;
         this.AIplayer = g.getCurrentPlayer();
         this.arbre = new ArbreEtOu(AIplayer);
-        this.arbre.evaluate(this.arbre.BoardToString(game.getBoard()));
+        // this.arbre.evaluate(this.arbre.BoardToString(game.getBoard()));
     }
 
     @Override
@@ -19,7 +20,7 @@ public class IADifficile extends IA{
         List<String> children = arbre.get_children(avantBoard);
         List<String> winning_children = new ArrayList<>();
         for(String child : children){
-            if (!arbre.evaluate(child)) {
+            if (!arbre.evaluate(child, MAX_TREE_DEPTH)) {
                 winning_children.add(child);
             }
         }

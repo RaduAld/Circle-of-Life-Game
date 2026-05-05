@@ -7,7 +7,7 @@ public class IAFacile extends IA{
     IAFacile(Game g){
         this.game = g;
         this.arbre = new ArbreEtOu(g.getCurrentPlayer());
-        this.arbre.evaluate(this.arbre.BoardToString(game.getBoard()));
+        // this.arbre.evaluate(this.arbre.BoardToString(game.getBoard()));
     }
 //    @Override
 //    public Coup joue(){
