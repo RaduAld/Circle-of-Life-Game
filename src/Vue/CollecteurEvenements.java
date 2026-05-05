@@ -8,5 +8,5 @@ public interface CollecteurEvenements {
 //    Board getBoard();
     void toucheClavier(String t);
     void ajouteInterfaceUtilisateur(InterfaceUtilisateur vue);
-    //void tictac();
+    void tictac();
 }
