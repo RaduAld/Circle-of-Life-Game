@@ -16,7 +16,7 @@ public class ArbreEtOu {
 
     String BoardToString(Board config){
         String vecteur = "";
-        vecteur += config.p0.toString() + "_" + config.p0.toString() + "_" + Integer.toString(config.capturedByP0) + "_" + Integer.toString(config.capturedByP1);
+        vecteur += config.p0.toString() + "_" + config.p1.toString() + "_" + Integer.toString(config.capturedByP0) + "_" + Integer.toString(config.capturedByP1);
         return vecteur;
     }
     Board StringToBoard(String vecteur){
