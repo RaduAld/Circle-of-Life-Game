@@ -176,18 +176,18 @@ public class ControleurMediateur implements CollecteurEvenements {
        vue = v;
    }
 
-//    @Override
-//    public void tictac() {
-//        if (!jeu.jeuTermine() && typeJoueur[jeu.getJoueur()] == 1) {
-//            if (animationIA == null) {
-//                lenteurJeuAutomatique = Configuration.lisInt("LenteurJeuAutomatique");
-//                animationIA = new AnimationJeuAutomatique(
-//                        lenteurJeuAutomatique,
-//                        joueursAutomatiques[jeu.getJoueur()],
-//                        this
-//                );
-//            }
-//            animationIA.tictac();
-//        }
-//    }
+    @Override
+    public void tictac() {
+        if (!jeu.gameOver() && typeJoueur[jeu.getCurrentPlayer()] == 1) {
+            if (animationIA == null) {
+                lenteurJeuAutomatique = Configuration.lisInt("LenteurJeuAutomatique");
+                animationIA = new AnimationJeuAutomatique(
+                        lenteurJeuAutomatique,
+                        joueursAutomatiques[jeu.getCurrentPlayer()],
+                        this
+                );
+            }
+            animationIA.tictac();
+        }
+    }
 }
