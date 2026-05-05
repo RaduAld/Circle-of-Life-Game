@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 public class IADifficile extends IA{
-    IADifficile(Game g){
+    public IADifficile(Game g){
         //remember
         this.game = g;
         this.AIplayer = g.getCurrentPlayer();

@@ -41,7 +41,9 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
          p2 = new PlayerPanel(jeu,control,2);
          actionContainer = new Action();
         dessin = new Dessin(jeu, p1, p2, control);
-      
+        JButton AI = Utilities.createJButton("AI");
+        AI.setMaximumSize(new Dimension(80,20));
+        AI.addActionListener(new AdaptateurIA(control));
         gameContainer = new JPanel(new BorderLayout());
         gameContainer.setOpaque(false);
         gameContainer.add(dessin, BorderLayout.CENTER);
@@ -52,6 +54,7 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
         root.add(gameContainer, BorderLayout.CENTER);
         root.add(p2,BorderLayout.WEST);
         root.add(actionContainer, BorderLayout.SOUTH);
+        root.add(AI,BorderLayout.NORTH);
 
     //    Timer timer = new Timer(30, e -> control.tictac());
     //    timer.start();
@@ -61,7 +64,9 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
 
 
     }
-
+    //a remplir pr changer fenetre de player 2 par ia
+    @Override
+    public void toggleIA(boolean b){}
 
     @Override
     public void miseAJour() {
