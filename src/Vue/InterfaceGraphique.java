@@ -29,6 +29,7 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
     public static void demarrer(Game j, CollecteurEvenements c){
         InterfaceGraphique vue = new InterfaceGraphique(j, c);
         c.ajouteInterfaceUtilisateur(vue);
+        j.ajouterObservateur(vue);
         SwingUtilities.invokeLater(vue);
     }
 
@@ -56,8 +57,8 @@ public class InterfaceGraphique extends JComponent implements Runnable, Interfac
         root.add(actionContainer, BorderLayout.SOUTH);
         root.add(AI,BorderLayout.NORTH);
 
-    //    Timer timer = new Timer(30, e -> control.tictac());
-    //    timer.start();
+        Timer timer = new Timer(30, e -> control.tictac());
+        timer.start();
         frame.add(root);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
